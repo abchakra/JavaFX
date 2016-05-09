@@ -2,6 +2,7 @@ package ch.makery.address;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.prefs.Preferences;
 
 import javax.xml.bind.JAXBContext;
@@ -10,6 +11,7 @@ import javax.xml.bind.Unmarshaller;
 
 import ch.makery.address.model.Person;
 import ch.makery.address.model.PersonListWrapper;
+import ch.makery.address.view.BirthdayStatisticsController;
 import ch.makery.address.view.PersonEditDialogController;
 import ch.makery.address.view.PersonOverviewController;
 import ch.makery.address.view.RootLayoutController;
@@ -40,15 +42,15 @@ public class MainApp extends Application {
 	 */
 	public MainApp() {
 		// Add some sample data
-		personData.add(new Person("Hans", "Muster"));
-		personData.add(new Person("Ruth", "Mueller"));
-		personData.add(new Person("Heinz", "Kurz"));
-		personData.add(new Person("Cornelia", "Meier"));
-		personData.add(new Person("Werner", "Meyer"));
-		personData.add(new Person("Lydia", "Kunz"));
-		personData.add(new Person("Anna", "Best"));
-		personData.add(new Person("Stefan", "Meier"));
-		personData.add(new Person("Martin", "Mueller"));
+		personData.add(new Person("Hans", "Muster",LocalDate.of(1982, 6, 21)));
+		personData.add(new Person("Ruth", "Mueller",LocalDate.of(1975, 4, 21)));
+		personData.add(new Person("Heinz", "Kurz",LocalDate.of(1989, 2, 21)));
+		personData.add(new Person("Cornelia", "Meier",LocalDate.of(1978, 5, 21)));
+		personData.add(new Person("Werner", "Meyer",LocalDate.of(186, 11, 21)));
+		personData.add(new Person("Lydia", "Kunz",LocalDate.of(1974, 1, 21)));
+		personData.add(new Person("Anna", "Best",LocalDate.of(1978, 7, 21)));
+		personData.add(new Person("Stefan", "Meier",LocalDate.of(1977, 2, 21)));
+		personData.add(new Person("Martin", "Mueller",LocalDate.of(1999, 8, 21)));
 	}
 
 	/**
@@ -273,6 +275,33 @@ public class MainApp extends Application {
 			alert.setContentText("Could not save data to file:\n" + file.getPath());
 
 			alert.showAndWait();
+		}
+	}
+
+	/**
+	 * Opens a dialog to show birthday statistics.
+	 */
+	public void showBirthdayStatistics() {
+		try {
+			// Load the fxml file and create a new stage for the popup.
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(MainApp.class.getResource("view/BirthdayStatistics.fxml"));
+			AnchorPane page = (AnchorPane) loader.load();
+			Stage dialogStage = new Stage();
+			dialogStage.setTitle("Birthday Statistics");
+			dialogStage.initModality(Modality.WINDOW_MODAL);
+			dialogStage.initOwner(primaryStage);
+			Scene scene = new Scene(page);
+			dialogStage.setScene(scene);
+
+			// Set the persons into the controller.
+			BirthdayStatisticsController controller = loader.getController();
+			controller.setPersonData(personData);
+
+			dialogStage.show();
+
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 }
